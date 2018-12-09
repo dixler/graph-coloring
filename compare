@@ -1,0 +1,14 @@
+#!/bin/bash
+
+num_colors=0
+num_nodes=$1
+probability=$2
+
+./generator.py $num_nodes $probability > graph.txt
+cp graph.txt ./greedy_color/graph.txt
+cp graph.txt ./sat_color/graph.txt
+
+cd greedy_color
+./test
+cd ../sat_color
+./test $num_nodes
