@@ -43,3 +43,6 @@ heuristic_min=$(echo $heuristic_time | sed 's/m/ /g' | sed 's/s/ /g' | awk '{ pr
 heuristic_secs=$(python -c "print($heuristic_sec+60*$heuristic_min)")
 
 echo $heuristic_sec $heuristic_colors >> reports/heuristic_data_$suffix.dat
+
+rm reports/temp_report_optimal
+rm reports/temp_report_heuristic
