@@ -7,8 +7,6 @@ suffix=$3
 
 
 mkdir reports
-touch reports/optimal_data.dat
-touch reports/heuristic_data.dat
 
 ./generator.py $num_nodes $probability > graph.txt
 cp graph.txt ./sat_color/graph.txt
