@@ -11,7 +11,7 @@ if is_sat == 'sat':
     sat=[(i//num_colors, i%num_colors) for i in sat]
     sat[0] = (0, sat[0][1])
     for i, val in enumerate(sat):
-        print(val)
-
+        print(val, end=', ')
+    exit(-1)
 else:
-    print('unsatisfiable')
+    exit(0)

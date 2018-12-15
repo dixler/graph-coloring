@@ -3,15 +3,15 @@ echo 'unsatisfiable' >  solution.txt
 num_colors=0
 num_nodes=$1
 probability=$2
+echo '' > sat.out.out
 
 #./generator.py $num_nodes $probability > graph.txt
 cat graph.txt
-while grep 'unsatisfiable' solution.txt; do
+
+while ./vis.py $num_colors $num_nodes < sat.out.out; do
    num_colors=$(($num_colors+1))
    ./main.py $num_colors < graph.txt > sat.out
-
    cat sat.out | z3 -in -dimacs > sat.out.out
-   ./vis.py $num_colors $num_nodes < sat.out.out > solution.txt
-   grep -v 'unsatisfiable' solution.txt
+
 done;
 

@@ -3,12 +3,43 @@
 num_colors=0
 num_nodes=$1
 probability=$2
+suffix=$3
+
+
+mkdir reports
+touch reports/optimal_data.dat
+touch reports/heuristic_data.dat
 
 ./generator.py $num_nodes $probability > graph.txt
-cp graph.txt ./greedy_color/graph.txt
 cp graph.txt ./sat_color/graph.txt
+cp graph.txt ./greedy_color/graph.txt
 
-cd greedy_color
-./test
-cd ../sat_color
-./test $num_nodes
+cd sat_color
+(time ./test $num_nodes > ../reports/temp_report_optimal) &>> ../reports/temp_report_optimal
+cd ../greedy_color
+(time ./main.py < graph.txt > ../reports/temp_report_heuristic) &>> ../reports/temp_report_heuristic
+cd ..
+
+
+# optimal report
+optimal_colors=$(cat reports/temp_report_optimal | grep 'satisfiable' | awk '{ print $3 }')
+optimal_time=$(cat reports/temp_report_optimal | grep 'real' | awk '{ print $2 }')
+
+optimal_sec=$(echo $optimal_time | sed 's/m/ /g' | sed 's/s/ /g' | awk '{ print $2 }')
+optimal_min=$(echo $optimal_time | sed 's/m/ /g' | sed 's/s/ /g' | awk '{ print $1 }')
+
+optimal_secs=$(python -c "print($optimal_sec+60*$optimal_min)")
+
+echo $optimal_sec $optimal_colors >> reports/optimal_data_$suffix.dat
+
+
+# heuristic report
+heuristic_colors=$(cat reports/temp_report_heuristic | grep 'satisfiable' | awk '{ print $3 }')
+heuristic_time=$(cat reports/temp_report_heuristic | grep 'real' | awk '{ print $2 }')
+
+heuristic_sec=$(echo $heuristic_time | sed 's/m/ /g' | sed 's/s/ /g' | awk '{ print $2 }')
+heuristic_min=$(echo $heuristic_time | sed 's/m/ /g' | sed 's/s/ /g' | awk '{ print $1 }')
+
+heuristic_secs=$(python -c "print($heuristic_sec+60*$heuristic_min)")
+
+echo $heuristic_sec $heuristic_colors >> reports/heuristic_data_$suffix.dat
